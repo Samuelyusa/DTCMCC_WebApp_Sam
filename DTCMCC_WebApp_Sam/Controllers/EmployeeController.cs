@@ -220,9 +220,9 @@ namespace DTCMCC_WebApp_Sam.Controllers
         }
 
         //Delete
-        public IActionResult Delete(int Id, string FirstName)
+        public IActionResult Delete(int? Id, bool? saveChangesError = false)
         {
-            string query = "select from employees where EmployeeId = @EmployeeId";
+            string query = "select * from employees where EmployeeId = @EmployeeId";
 
             SqlParameter sqlParameter = new SqlParameter();
             sqlParameter.ParameterName = "@EmployeeId";
@@ -231,14 +231,6 @@ namespace DTCMCC_WebApp_Sam.Controllers
             sqlConnection = new SqlConnection(connectionString);
             SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
             sqlCommand.Parameters.Add(sqlParameter);
-
-            string DeleteQuery = "Delete from employees where EmployeeId = @EmployeeId";
-            
-            SqlParameter sqlParameterDelete = new SqlParameter();
-            sqlParameterDelete.ParameterName = "@EmployeeId";
-            sqlParameterDelete.Value = Id;
-            SqlCommand sqlCommandDel = new SqlCommand(DeleteQuery, sqlConnection);
-            sqlCommandDel.Parameters.Add(sqlParameterDelete);
 
             try
             {
@@ -259,15 +251,40 @@ namespace DTCMCC_WebApp_Sam.Controllers
                     }
                     sqlDataReader.Close();
                 }
-                using (SqlDataReader sqlDataReader = sqlCommandDel.ExecuteReader())
-
                 sqlConnection.Close();
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.InnerException);
             }
+
             return View();
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(int Id)
+        {
+            string query = "delete from employees where EmployeeId = @EmployeeId";
+
+            SqlParameter sqlParameter = new SqlParameter();
+            sqlParameter.ParameterName = "@EmployeeId";
+            sqlParameter.Value = Id;
+
+            sqlConnection = new SqlConnection(connectionString);
+            SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
+            sqlCommand.Parameters.Add(sqlParameter);
+            try
+            {
+                sqlConnection.Open();
+                using (SqlDataReader sqlDataReader = sqlCommand.ExecuteReader())
+                sqlConnection.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.InnerException);
+            }
+            return RedirectToAction(nameof(Index));
         }
 
     }
