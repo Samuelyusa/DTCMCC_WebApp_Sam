@@ -95,8 +95,32 @@ namespace DTCMCC_WebApp_Sam.Controllers
         //GET CREATE
         public IActionResult Create()
         {
+           
+            string data_length = "SELECT COUNT(EmployeeId) FROM Employees";
+            int count = 0;
+
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    using (SqlCommand dataCount = new SqlCommand(data_length, sqlConnection))
+                    {
+                        sqlConnection.Open();
+                        count = (int)dataCount.ExecuteScalar();
+                    }
+
+                    ViewData["EmployeeId"] = count + 1;
+
+                    sqlConnection.Close();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.InnerException);
+                }
+            }
             return View();
-        }
+        } 
+       
 
         //POST CREATE
         [HttpPost]
