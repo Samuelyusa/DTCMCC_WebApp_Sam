@@ -1,0 +1,43 @@
+﻿@model IEnumerable<DTCMCC_WebApp_Sam.Models.Employee>
+
+@{
+    ViewData["Title"] = "Data Karyawan";
+}
+
+<h1>Data Karyawan</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.EmployeeId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th>
+                Action
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.EmployeeId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FirstName)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new {  id=item.EmployeeId  }) |
+                @Html.ActionLink("Details", "Details", new {  id=item.EmployeeId }) |
+                @Html.ActionLink("Delete", "Delete", new {  id=item.EmployeeId  })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
